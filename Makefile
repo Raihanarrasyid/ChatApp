@@ -12,4 +12,3 @@ build-app:
 
 docs:
 	swag fmt ./
-	swag init -o ./docs -g init.go -d ./internal/app,./internal/controller,./internal/http/response,./internal/http/request,./internal/http/server
