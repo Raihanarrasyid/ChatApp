@@ -1,6 +1,7 @@
 package db
 
 import (
+	"ChatApp/internal/model"
 	"log"
 	"time"
 
@@ -24,7 +25,9 @@ func NewDB(dsn string) (*gorm.DB, error) {
 }
 
 func Migrate(db *gorm.DB) {
-	err := db.AutoMigrate()
+	err := db.AutoMigrate(
+		&model.User{},
+	)
 
 	if err != nil {
 		panic(err)

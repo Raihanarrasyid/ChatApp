@@ -11,6 +11,7 @@ type Config struct {
 	Port string `mapstructure:"APP_PORT"`
 	JwtSecret string `mapstructure:"JWT_SECRET"`
 	DBHost string `mapstructure:"DB_HOST"`
+	GinMode string `mapstructure:"GIN_MODE"`
 }
 
 func LoadConfig() (*Config, error) {
