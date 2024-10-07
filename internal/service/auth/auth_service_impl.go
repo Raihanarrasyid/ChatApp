@@ -88,7 +88,7 @@ func (a *AuthServiceImpl) SignIn(ctx context.Context, req request.SignInRequest,
 		return signin, err
 	}
 
-	err = a.AuthRepository.SaveRefreshToken(ctx, user.ID.String(), refreshToken, 30*24*time.Hour)
+	err = a.AuthRepository.SaveRefreshToken(ctx, user.ID.String(), refreshToken, 24*time.Hour)
 	if err != nil {
 		return signin, err
 	}
@@ -115,7 +115,7 @@ func generateOTP() string {
 func generateAccessToken(user *model.User, jwtSecret string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id" : user.ID,
-		"exp" : time.Now().Add(time.Hour * 24).Unix(),
+		"exp" : time.Now().Add(time.Hour * 1).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -125,7 +125,7 @@ func generateAccessToken(user *model.User, jwtSecret string) (string, error) {
 func generateRefreshToken(user *model.User, jwtSecret string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id" : user.ID,
-		"exp" : time.Now().Add(time.Hour * 24 * 30).Unix(),
+		"exp" : time.Now().Add(time.Hour * 24).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
