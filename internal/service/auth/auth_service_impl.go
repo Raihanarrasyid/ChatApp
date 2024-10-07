@@ -15,6 +15,7 @@ import (
 	commonError "ChatApp/internal/util/error"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -107,6 +108,32 @@ func (a *AuthServiceImpl) SignIn(ctx context.Context, req request.SignInRequest,
 
 	return signin, nil
 }
+
+func (a *AuthServiceImpl) RefreshAccessToken(ctx context.Context, refreshToken string, jwtSecret string) (res response.RefreshTokenResponse, err error) {
+	claims := &jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(jwtSecret), nil
+	})
+	if err != nil || !token.Valid {
+		return res, commonError.NewBadRequest("Invalid refresh token")
+	}
+
+	userID := (*claims)["user_id"].(string)
+
+	userResult, err := a.UserRepository.GetByID(ctx, uuid.MustParse(userID))
+
+	if err != nil {
+		return res, commonError.NewNotFound("User not found")
+	}
+
+	res.AccessToken, err = generateAccessToken(userResult, jwtSecret)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
 
 func generateOTP() string {
 	return fmt.Sprintf("%06d", rand.IntN(1000000))

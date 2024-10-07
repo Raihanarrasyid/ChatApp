@@ -96,7 +96,7 @@ func (auc *AuthControllerImpl) VerifyOtpSignUp(ctx *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			body	body		request.SignInRequest	true	"Sign In"
-//	@Success		200		{object}	http.Response
+//	@Success		200		{object}	http.Response{value=response.SignInResponse}
 //	@Failure		400		{object}	http.Error
 //	@Failure		401		{object}	http.Error
 //	@Failure		500		{object}	http.Error
@@ -129,4 +129,37 @@ func (auc *AuthControllerImpl) SignIn(ctx *gin.Context) {
 	})
 
 	ctx.JSON(http.StatusOK, signInResponse)
+}
+
+//	@Summary		Refresh access token
+//	@Description	Refresh access token
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			refresh_token	header	string	true	"Refresh Token from Cookie"
+//	@Success		200		{object}	http.Response{value=response.RefreshTokenResponse}
+//	@Failure		400		{object}	http.Error
+//	@Failure		401		{object}	http.Error
+//	@Failure		500		{object}	http.Error
+//	@Router			/auth/refresh-token [get]
+func (auc *AuthControllerImpl) RefreshAccessToken(ctx *gin.Context) {
+	refreshToken, err := ctx.Cookie("refresh_token")
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	accessToken, err := auc.authService.RefreshAccessToken(ctx, refreshToken, auc.config.JwtSecret)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"access_token": accessToken,
+	})
 }
