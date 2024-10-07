@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewDB(dsn string) (*gorm.DB, error) {
+func NewPostgresDB(dsn string) (*gorm.DB, error) {
 	var errs error
 	for i := 0; i < 5; i++ {
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})

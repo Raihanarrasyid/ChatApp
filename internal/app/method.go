@@ -1,14 +1,24 @@
 package app
 
 import (
+	"ChatApp/configs"
+	"ChatApp/docs"
 	http "ChatApp/internal/http/server"
-	pg "ChatApp/pkg/db"
+	database "ChatApp/pkg/db"
 	"log"
 
+	"github.com/go-redis/redis/v8"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	AuthRepository "ChatApp/internal/repository/auth"
 	UserRepository "ChatApp/internal/repository/user"
 
+	AuthService "ChatApp/internal/service/auth"
+	EmailService "ChatApp/internal/service/email"
 	UserService "ChatApp/internal/service/user"
 
+	AuthController "ChatApp/internal/controller/auth"
 	UserController "ChatApp/internal/controller/user"
 
 	"github.com/gin-gonic/gin"
@@ -25,16 +35,29 @@ func (app *App) Run() {
 	})
 
 	var err error
-	var db *gorm.DB
-	db, err = pg.NewDB(app.config.DBHost)
+	var postgresDB *gorm.DB
+	var redisDB *redis.Client
+	postgresDB, err = database.NewPostgresDB(app.config.DBHost)
+	redisDB, err = database.NewRedisDB(app.config.RedisHost, app.config.RedisPass)
 
 	if err != nil {
 		panic(err)
 	}
 
-	pg.Migrate(db)
+	database.Migrate(postgresDB)
 
-	initControllers(server, db)
+	if app.config.GinMode == "debug" {
+		log.Println("Init Swagger")
+		docs.SwaggerInfo.Version = "1.0"
+		docs.SwaggerInfo.Title = "ChatApp API"
+		docs.SwaggerInfo.Description = "ChatApp API"
+		docs.SwaggerInfo.BasePath = "/api/v1"
+		docs.SwaggerInfo.Schemes = []string{"http", "https"}
+
+		server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
+
+	initControllers(server, postgresDB, redisDB, app.config)
 
 	log.Printf("Server is running on port %s mode %s", app.config.Port, app.config.GinMode)
 	err = server.Run(":" + app.config.Port)
@@ -46,14 +69,21 @@ func (app *App) Run() {
 
 func initControllers(
 	router *gin.Engine,
-	db *gorm.DB,
+	postgresDB *gorm.DB,
+	redisDB *redis.Client,
+	config *configs.Config,
 ) {
-	userRepository := UserRepository.NewUserRepository(db)
+	userRepository := UserRepository.NewUserRepository(postgresDB)
+	authRepository := AuthRepository.NewAuthRepositoryImpl(redisDB)
 
 	userService := UserService.NewUserService(userRepository)
+	emailService := EmailService.NewEmailService(config.SMTPHost, config.SMTPPort, config.SMTPUser, config.SMTPPass)
+	authService := AuthService.NewAuthService(userRepository, authRepository, *emailService)
 
+	
 	routerGroup := router.Group("/api/v1")
-
-
+	
+	
+	AuthController.NewAuthController(routerGroup.Group("/auth"), authService, config)
 	UserController.NewUserController(routerGroup.Group("/users"), userService)
 }

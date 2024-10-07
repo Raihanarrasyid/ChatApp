@@ -3,7 +3,6 @@ package user
 import (
 	"ChatApp/internal/http/request"
 	"ChatApp/internal/http/response"
-	"ChatApp/internal/model"
 	"ChatApp/internal/repository/user"
 	"context"
 
@@ -19,26 +18,6 @@ type UserServiceImpl struct {
 
 func NewUserService(userRepository user.UserRepository) UserService {
 	return &UserServiceImpl{UserRepository: userRepository}
-}
-
-func (usi *UserServiceImpl) Create(ctx context.Context, req request.CreateUserRequest) (err error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-
-	if err != nil {
-		return commonError.NewBadRequest("Failed to hash password: " + err.Error())
-	}
-
-	user := model.User{
-		Username: req.Username,
-		Password: string(hashedPassword),
-		Email:    req.Email,
-	}
-
-	if err := usi.UserRepository.Create(ctx, &user); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (usi *UserServiceImpl) Update(ctx context.Context, id string, req request.UpdateUserRequest) (err error) {

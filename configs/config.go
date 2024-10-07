@@ -12,6 +12,12 @@ type Config struct {
 	JwtSecret string `mapstructure:"JWT_SECRET"`
 	DBHost string `mapstructure:"DB_HOST"`
 	GinMode string `mapstructure:"GIN_MODE"`
+	RedisHost string `mapstructure:"REDIS_HOST"`
+	RedisPass string `mapstructure:"REDIS_PASS"`
+	SMTPHost string `mapstructure:"SMTP_HOST"`
+	SMTPPort string `mapstructure:"SMTP_PORT"`
+	SMTPUser string `mapstructure:"SMTP_USER"`
+	SMTPPass string `mapstructure:"SMTP_PASS"`
 }
 
 func LoadConfig() (*Config, error) {

@@ -55,5 +55,9 @@ func (ur *UserRepositoryImpl) GetAll(ctx context.Context, limit, offset int) (us
 	return users, nil
 }
 
-
-
+func (ur *UserRepositoryImpl) GetByEmail(ctx context.Context, email string) (user *model.User, err error) {
+	if err := ur.db.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, commonErr.NewNotFound("User not found")
+	}
+	return user, nil
+}

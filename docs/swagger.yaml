@@ -18,14 +18,28 @@ definitions:
     properties:
       email:
         type: string
-      password:
+    type: object
+  request.SignInRequest:
+    properties:
+      email:
         type: string
-      username:
+      password:
         type: string
     type: object
   request.UpdateUserRequest:
     properties:
       email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  request.VerifyOtpRequest:
+    properties:
+      email:
+        type: string
+      otp:
         type: string
       password:
         type: string
@@ -49,6 +63,100 @@ info:
     email: raihanarrasyid1704@gmail.com
     name: Raihan Arrasyid
 paths:
+  /auth/signin:
+    post:
+      consumes:
+      - application/json
+      description: Sign in
+      parameters:
+      - description: Sign In
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.Error'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.Error'
+      summary: Sign in
+      tags:
+      - auth
+  /auth/signup/request-otp:
+    post:
+      consumes:
+      - application/json
+      description: Request OTP for sign up
+      parameters:
+      - description: Create User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.Error'
+      summary: Request OTP for sign up
+      tags:
+      - auth
+  /auth/signup/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verify OTP for sign up
+      parameters:
+      - description: Verify OTP
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.VerifyOtpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.Error'
+      summary: Verify OTP for sign up
+      tags:
+      - auth
   /users:
     get:
       consumes:
@@ -194,40 +302,6 @@ paths:
           schema:
             $ref: '#/definitions/http.Error'
       summary: Update user
-      tags:
-      - user
-  /users/signup:
-    post:
-      consumes:
-      - application/json
-      description: Create user
-      parameters:
-      - description: Create User
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/request.CreateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/http.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/http.Error'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/http.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/http.Error'
-      summary: Create user
       tags:
       - user
 securityDefinitions:

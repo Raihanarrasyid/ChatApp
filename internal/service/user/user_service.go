@@ -7,7 +7,6 @@ import (
 )
 
 type UserService interface {
-	Create(ctx context.Context, req request.CreateUserRequest) (err error)
 	Update(ctx context.Context, id string, req request.UpdateUserRequest) (err error)
 	Delete(ctx context.Context, id string) (err error)
 	GetByID(ctx context.Context, id string) (user response.UserResponse, err error)
