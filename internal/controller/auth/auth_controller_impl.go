@@ -109,7 +109,7 @@ func (auc *AuthControllerImpl) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	user, accessToken, refreshToken, err := auc.authService.SignIn(ctx, req, auc.config.JwtSecret)
+	signInResponse, err := auc.authService.SignIn(ctx, req, auc.config.JwtSecret)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
 			"error": err.Error(),
@@ -117,9 +117,5 @@ func (auc *AuthControllerImpl) SignIn(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"user":          user,
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-	})
+	ctx.JSON(http.StatusOK, signInResponse)
 }
