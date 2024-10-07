@@ -9,6 +9,12 @@ type App struct {
 //	@contact.name	Raihan Arrasyid
 //	@contact.email	raihanarrasyid1704@gmail.com
 
+//	@host			configs.Host
+//	@BasePath		/api/v1
+//	@title			ChatApp API
+//	@description	ChatApp API
+//	@version		1.0
+
 //	@securityDefinitions.apikey	UserAuthorization
 //	@in							header
 //	@name						Authorization

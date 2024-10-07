@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   http.Error:
     properties:
@@ -72,10 +73,14 @@ definitions:
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
+host: configs.Host
 info:
   contact:
     email: raihanarrasyid1704@gmail.com
     name: Raihan Arrasyid
+  description: ChatApp API
+  title: ChatApp API
+  version: "1.0"
 paths:
   /auth/refresh-token:
     get:

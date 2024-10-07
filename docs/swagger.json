@@ -1,11 +1,16 @@
 {
     "swagger": "2.0",
     "info": {
+        "description": "ChatApp API",
+        "title": "ChatApp API",
         "contact": {
             "name": "Raihan Arrasyid",
             "email": "raihanarrasyid1704@gmail.com"
-        }
+        },
+        "version": "1.0"
     },
+    "host": "configs.Host",
+    "basePath": "/api/v1",
     "paths": {
         "/auth/refresh-token": {
             "get": {

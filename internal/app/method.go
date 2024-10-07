@@ -48,7 +48,7 @@ func (app *App) Run() {
 
 	if app.config.GinMode == "debug" {
 		log.Println("Init Swagger")
-		docs.SwaggerInfo.Version = "1.0"
+		docs.SwaggerInfo.Version = "1.0.0"
 		docs.SwaggerInfo.Title = "ChatApp API"
 		docs.SwaggerInfo.Description = "ChatApp API"
 		docs.SwaggerInfo.BasePath = "/api/v1"
