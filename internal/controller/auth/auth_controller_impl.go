@@ -5,6 +5,7 @@ import (
 	"ChatApp/internal/http/request"
 	"ChatApp/internal/service/auth"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -116,6 +117,16 @@ func (auc *AuthControllerImpl) SignIn(ctx *gin.Context) {
 		})
 		return
 	}
+
+	http.SetCookie(ctx.Writer, &http.Cookie{
+		Name: "refresh_token",
+		Value: signInResponse.RefreshToken,
+		Path: "/",
+		HttpOnly: true,
+		Secure: true,
+		SameSite: http.SameSiteNoneMode,
+		Expires: time.Now().Add(24 * time.Hour),
+	})
 
 	ctx.JSON(http.StatusOK, signInResponse)
 }
