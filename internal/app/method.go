@@ -54,7 +54,8 @@ func (app *App) Run() {
 		docs.SwaggerInfo.BasePath = "/api/v1"
 		docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
-		server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+		server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.URL("http://localhost:3000/swagger/doc.json")))
 	}
 
 	initControllers(server, postgresDB, redisDB, app.config)
