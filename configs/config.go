@@ -9,6 +9,7 @@ import (
 type Config struct {
 	AppName string `mapstructure:"APP_NAME"`
 	Port string `mapstructure:"APP_PORT"`
+	Host string `mapstructure:"APP_HOST"`
 	JwtSecret string `mapstructure:"JWT_SECRET"`
 	DBHost string `mapstructure:"DB_HOST"`
 	GinMode string `mapstructure:"GIN_MODE"`
