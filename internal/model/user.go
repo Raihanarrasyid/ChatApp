@@ -11,4 +11,5 @@ type User struct {
 	Username string `gorm:"type:varchar(255);not null"`
 	Password string `gorm:"type:varchar(255);not null"`
 	Email string `gorm:"type:varchar(255);not null"`
+	Chats []Chat `gorm:"foreignKey:FromID"`
 }
