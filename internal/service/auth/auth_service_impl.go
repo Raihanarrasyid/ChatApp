@@ -62,7 +62,7 @@ func (a *AuthServiceImpl) VerifyAndCreateUser(ctx context.Context, req request.V
 	}
 
 	if err := a.UserRepository.Create(ctx, &user); err != nil {
-		return err
+		return commonError.NewBadRequest("Email registered")
 	}
 
 	return nil
