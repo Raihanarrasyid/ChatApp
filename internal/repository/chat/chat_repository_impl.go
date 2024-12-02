@@ -28,6 +28,8 @@ func (c *ChatRepositoryImpl) AddClient(ctx context.Context, userID string, conn 
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.clients[userID] = conn
+
+	go c.DeliverPendingMessage(userID)
 }
 
 func (c *ChatRepositoryImpl) StorePendingMessage(receiverID string, message []byte) error {
@@ -40,7 +42,7 @@ func (c *ChatRepositoryImpl) DeliverPendingMessage(receiverID string) {
 		return
 	}
 
-	key := fmt.Sprintf("messages:%s", receiverID)
+	key := fmt.Sprintf("message:%s", receiverID)
 	for {
 		message, err := c.redis.RPop(c.ctx, key).Result()
 		if err == redis.Nil {
