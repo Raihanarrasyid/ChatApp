@@ -12,13 +12,16 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	AuthRepository "ChatApp/internal/repository/auth"
+	ChatRepository "ChatApp/internal/repository/chat"
 	UserRepository "ChatApp/internal/repository/user"
 
 	AuthService "ChatApp/internal/service/auth"
+	ChatService "ChatApp/internal/service/chat"
 	EmailService "ChatApp/internal/service/email"
 	UserService "ChatApp/internal/service/user"
 
 	AuthController "ChatApp/internal/controller/auth"
+	ChatController "ChatApp/internal/controller/chat"
 	UserController "ChatApp/internal/controller/user"
 
 	"github.com/gin-gonic/gin"
@@ -76,10 +79,12 @@ func initControllers(
 ) {
 	userRepository := UserRepository.NewUserRepository(postgresDB)
 	authRepository := AuthRepository.NewAuthRepositoryImpl(redisDB)
+	chatRepository := ChatRepository.NewChatRepository(redisDB)
 
 	userService := UserService.NewUserService(userRepository)
 	emailService := EmailService.NewEmailService(config.SMTPHost, config.SMTPPort, config.SMTPUser, config.SMTPPass)
 	authService := AuthService.NewAuthService(userRepository, authRepository, *emailService)
+	chatService := ChatService.NewChatService(chatRepository)
 
 	
 	routerGroup := router.Group("/api/v1")
@@ -87,4 +92,5 @@ func initControllers(
 	
 	AuthController.NewAuthController(routerGroup.Group("/auth"), authService, config)
 	UserController.NewUserController(routerGroup.Group("/users"), userService)
+	ChatController.NewChatController(routerGroup.Group("/chat"), chatService)
 }

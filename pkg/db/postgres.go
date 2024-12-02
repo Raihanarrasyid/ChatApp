@@ -27,6 +27,7 @@ func NewPostgresDB(dsn string) (*gorm.DB, error) {
 func Migrate(db *gorm.DB) {
 	err := db.AutoMigrate(
 		&model.User{},
+		&model.Chat{},
 	)
 
 	if err != nil {

@@ -15,3 +15,14 @@ type Chat struct {
 	FromUser User `gorm:"foreignKey:FromID;references:ID"`
 	ToUser User `gorm:"foreignKey:ToID;references:ID"`
 }
+
+type Message struct {
+	Sender string
+	Content string
+	Timestamp string
+}
+
+type WebSocketMessage struct {
+	ReceiverID string `json: "receiverID"`
+	Content string `json: "content"`
+}
