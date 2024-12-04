@@ -4,6 +4,7 @@ import (
 	"ChatApp/configs"
 	"ChatApp/docs"
 	http "ChatApp/internal/http/server"
+	"ChatApp/internal/middleware"
 	database "ChatApp/pkg/db"
 	"log"
 
@@ -88,9 +89,11 @@ func initControllers(
 
 	
 	routerGroup := router.Group("/api/v1")
-	
+
+	protected := routerGroup.Group("/")
+	protected.Use(middleware.AuthMiddleware(config))
 	
 	AuthController.NewAuthController(routerGroup.Group("/auth"), authService, config)
-	UserController.NewUserController(routerGroup.Group("/users"), userService)
-	ChatController.NewChatController(routerGroup.Group("/chat"), chatService)
+	UserController.NewUserController(protected.Group("/users"), userService)
+	ChatController.NewChatController(protected.Group("/chat"), chatService)
 }
