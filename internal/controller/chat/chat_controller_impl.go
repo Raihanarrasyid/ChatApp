@@ -4,7 +4,6 @@ import (
 	"ChatApp/internal/model"
 	"ChatApp/internal/service/chat"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,7 +29,7 @@ func NewChatController(router *gin.RouterGroup, chatService *chat.ChatServiceImp
 }
 
 func (cc *ChatControllerImpl) HandleWebsocket(c *gin.Context) {
-	userID := c.Query("userID")
+	userID := c.GetString("user_id")
 
 	if userID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "userID is required"})
@@ -60,7 +59,7 @@ func (cc *ChatControllerImpl) HandleWebsocket(c *gin.Context) {
 		}
 		
 		if wsMessage.ReceiverID == "" {
-			conn.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("receiverID is required")))
+			conn.WriteMessage(websocket.TextMessage, []byte("receiverID is required"))
 			continue
 		}
 
