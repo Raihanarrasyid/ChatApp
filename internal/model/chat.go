@@ -23,6 +23,6 @@ type Message struct {
 }
 
 type WebSocketMessage struct {
-	ReceiverID string `json: "receiverID"`
-	Content string `json: "content"`
+	ReceiverID string `json:"receiver_id"`
+	Content string `json:"content"`
 }
