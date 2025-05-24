@@ -47,6 +47,23 @@ definitions:
       username:
         type: string
     type: object
+  response.ChatResponse:
+    properties:
+      from_id:
+        type: string
+      from_user:
+        $ref: '#/definitions/response.UserResponse'
+      id:
+        type: string
+      is_read:
+        type: boolean
+      message:
+        type: string
+      to_id:
+        type: string
+      to_user:
+        $ref: '#/definitions/response.UserResponse'
+    type: object
   response.RefreshTokenResponse:
     properties:
       access_token:
@@ -219,6 +236,67 @@ paths:
       summary: Verify OTP for sign up
       tags:
       - auth
+  /chat:
+    get:
+      consumes:
+      - application/json
+      description: Get all chats
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/http.Response'
+            - properties:
+                value:
+                  items:
+                    $ref: '#/definitions/response.ChatResponse'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.Error'
+      summary: Get all chats
+      tags:
+      - chat
+  /chat/ws:
+    get:
+      consumes:
+      - application/json
+      description: Handle Websocket
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.Error'
+      summary: Handle Websocket
+      tags:
+      - chat
   /users:
     get:
       consumes:
@@ -256,6 +334,44 @@ paths:
           schema:
             $ref: '#/definitions/http.Error'
       summary: Get all user
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Update user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update User
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/http.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/http.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/http.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.Error'
+      summary: Update user
       tags:
       - user
   /users/{id}:
@@ -326,44 +442,6 @@ paths:
           schema:
             $ref: '#/definitions/http.Error'
       summary: Get user by ID
-      tags:
-      - user
-    put:
-      consumes:
-      - application/json
-      description: Update user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: string
-      - description: Update User
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/request.UpdateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/http.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/http.Error'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/http.Error'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/http.Error'
-      summary: Update user
       tags:
       - user
 securityDefinitions:

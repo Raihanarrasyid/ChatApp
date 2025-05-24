@@ -136,11 +136,11 @@ func (auc *AuthControllerImpl) SignIn(ctx *gin.Context) {
 //	@Tags			auth
 //	@Accept			json
 //	@Produce		json
-//	@Param			refresh_token	header	string	true	"Refresh Token from Cookie"
-//	@Success		200		{object}	http.Response{value=response.RefreshTokenResponse}
-//	@Failure		400		{object}	http.Error
-//	@Failure		401		{object}	http.Error
-//	@Failure		500		{object}	http.Error
+//	@Param			refresh_token	header		string	true	"Refresh Token from Cookie"
+//	@Success		200				{object}	http.Response{value=response.RefreshTokenResponse}
+//	@Failure		400				{object}	http.Error
+//	@Failure		401				{object}	http.Error
+//	@Failure		500				{object}	http.Error
 //	@Router			/auth/refresh-token [get]
 func (auc *AuthControllerImpl) RefreshAccessToken(ctx *gin.Context) {
 	refreshToken, err := ctx.Cookie("refresh_token")
