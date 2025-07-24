@@ -1,6 +1,7 @@
 package chat
 
 import (
+	_ "ChatApp/internal/http/response"
 	"ChatApp/internal/model"
 	"ChatApp/internal/service/chat"
 	"encoding/json"
@@ -26,8 +27,43 @@ func NewChatController(router *gin.RouterGroup, chatService *chat.ChatServiceImp
 	}
 
 	router.GET("/ws", controller.HandleWebsocket)
+	router.GET("/", controller.GetAllChats)
 }
 
+// @Summary		Get all chats
+// @Description	Get all chats
+// @Tags			chat
+// @Accept			json
+// @Produce		json
+// @Success		200	{object}	http.Response{value=[]response.ChatResponse}
+// @Failure		400	{object}	http.Error
+// @Failure		404	{object}	http.Error
+// @Failure		500	{object}	http.Error
+// @Router			/chat [get]
+func (cc *ChatControllerImpl) GetAllChats(c *gin.Context) {
+	chats, err := cc.ChatService.GetAllMessages(c, c.GetString("user_id"))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if chats == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Chats not found"})
+		return
+	}
+	c.JSON(http.StatusOK, chats)
+}
+
+//	@Summary		Handle Websocket
+//	@Description	Handle Websocket
+//	@Tags			chat
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	http.Response
+//	@Failure		400	{object}	http.Error
+//	@Failure		404	{object}	http.Error
+//	@Failure		500	{object}	http.Error
+//	@Router			/chat/ws [get]
 func (cc *ChatControllerImpl) HandleWebsocket(c *gin.Context) {
 	userID := c.GetString("user_id")
 

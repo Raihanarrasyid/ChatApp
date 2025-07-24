@@ -4,6 +4,9 @@ This project is a chat application built using **Gorilla WebSocket** for real-ti
 
 ---
 
+## Project Pattern
+This project is using the repository pattern, which is beneficial because it separates data access logic from business logic, resulting in a cleaner and more maintainable codebase. This separation enhances testability by allowing the use of mock repositories without relying on the actual database. It also increases flexibility, as changes to the underlying data source require minimal modifications to the business layer. By promoting adherence to the Single Responsibility Principle, the repository pattern helps ensure a well-structured and scalable architecture.
+
 ## Features
 
 - **User Authentication:**

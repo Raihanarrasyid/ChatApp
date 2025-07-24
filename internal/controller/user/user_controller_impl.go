@@ -20,7 +20,7 @@ func NewUserController(router *gin.RouterGroup, userService user.UserService) {
 	}
 
 	router.GET("/", controller.GetAllUser)
-	router.PUT("/:id", controller.UpdateUser)
+	router.PUT("/", controller.UpdateUser)
 	router.DELETE("/:id", controller.DeleteUser)
 	router.GET("/:id", controller.GetUserByID)
 }
@@ -36,9 +36,9 @@ func NewUserController(router *gin.RouterGroup, userService user.UserService) {
 //	@Failure		400		{object}	http.Error
 //	@Failure		404		{object}	http.Error
 //	@Failure		500		{object}	http.Error
-//	@Router			/users/{id} [put]
+//	@Router			/users [put]
 func (u *UserControllerImpl) UpdateUser(ctx *gin.Context) {
-	id := ctx.Param("id")
+	id := ctx.GetString("user_id")
 	var req request.UpdateUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -70,9 +70,9 @@ func (u *UserControllerImpl) UpdateUser(ctx *gin.Context) {
 //	@Failure		400	{object}	http.Error
 //	@Failure		404	{object}	http.Error
 //	@Failure		500	{object}	http.Error
-//	@Router			/users/{id} [delete]
+//	@Router			/users [delete]
 func (u *UserControllerImpl) DeleteUser(ctx *gin.Context) {
-	id := ctx.Param("id")
+	id := ctx.GetString("user_id")
 	err := u.UserService.Delete(ctx, id)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{

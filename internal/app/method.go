@@ -80,7 +80,7 @@ func initControllers(
 ) {
 	userRepository := UserRepository.NewUserRepository(postgresDB)
 	authRepository := AuthRepository.NewAuthRepositoryImpl(redisDB)
-	chatRepository := ChatRepository.NewChatRepository(redisDB)
+	chatRepository := ChatRepository.NewChatRepository(redisDB, postgresDB)
 
 	userService := UserService.NewUserService(userRepository)
 	emailService := EmailService.NewEmailService(config.SMTPHost, config.SMTPPort, config.SMTPUser, config.SMTPPass)
